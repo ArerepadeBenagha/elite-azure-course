@@ -1,6 +1,6 @@
 variable "location" {
   type    = string
-  default = "West US 2"
+  default = "EAST US"
 }
 variable "alias" {
   type    = string
