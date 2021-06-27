@@ -11,3 +11,8 @@ variable "ssh-source-address" {
   type    = string
   default = "*"
 }
+
+variable "rdp" {
+  type    = string
+  default = "*"
+}

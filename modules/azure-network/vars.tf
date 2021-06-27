@@ -38,13 +38,3 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
-
-variable "location" {
-  type    = string
-  default = "EAST US"
-}
-
-variable "alias" {
-  type    = string
-  default = "dev"
-}
