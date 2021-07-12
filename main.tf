@@ -18,6 +18,17 @@ resource "azurerm_public_ip" "dev-public-ip" {
   }
 }
 
+resource "azurerm_public_ip" "slave-public-ip" {
+  name                = "slave-pip"
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  allocation_method   = "Dynamic"
+
+  tags = {
+    environment = "dev-ip"
+  }
+}
+
 resource "azurerm_network_interface" "dev-interface" {
   name                = var.alias
   location            = var.location
@@ -31,6 +42,18 @@ resource "azurerm_network_interface" "dev-interface" {
   }
 }
 
+resource "azurerm_network_interface" "slavedev-interface" {
+  name                = "slavedev-interface"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+
+  ip_configuration {
+    name                          = var.alias
+    subnet_id                     = data.azurerm_subnet.subnet.id
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.slave-public-ip.id
+  }
+}
 ##--------------------------------------#
 ##         Bastion Module              ##
 ##--------------------------------------#
@@ -113,14 +136,72 @@ resource "azurerm_linux_virtual_machine" "jenkins-vm" {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
-
+  # extension {
+  #   name                 = "InstallCustomScript"
+  #   publisher            = "Microsoft.Azure.Extensions"
+  #   type                 = "CustomScript"
+  #   type_handler_version = "2.0"
+  #   settings             = <<SETTINGS
+  #       {
+  #         "fileUris": ["https://raw.githubusercontent.com/ArerepadeBenagha/elite-azure-course/blob/master/scripts.sh"], 
+  #         "commandToExecute": "./scripts.sh"
+  #       }
+  #     SETTINGS
+  # }
   source_image_reference {
     publisher = "Canonical"
     offer     = "UbuntuServer"
     sku       = "18.04-LTS"
     version   = "latest"
+
   }
+
   tags = {
     environment = "dev"
   }
 }
+
+resource "azurerm_linux_virtual_machine" "slave-vm" {
+  name                = "${var.alias}-slavevm"
+  resource_group_name = azurerm_resource_group.eliteInfra.name
+  location            = var.location
+  size                = "Standard_F2"
+  admin_username      = "adminuser"
+  # delete_os_disk_on_termination    = true
+  # delete_data_disks_on_termination = true
+  network_interface_ids = [
+    azurerm_network_interface.slavedev-interface.id,
+  ]
+  admin_ssh_key {
+    username   = "adminuser"
+    public_key = file("~/.ssh/id_rsa.pub")
+  }
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+  # extension {
+  #   name                 = "InstallCustomScript"
+  #   publisher            = "Microsoft.Azure.Extensions"
+  #   type                 = "CustomScript"
+  #   type_handler_version = "2.0"
+  #   settings             = <<SETTINGS
+  #       {
+  #         "fileUris": ["https://raw.githubusercontent.com/ArerepadeBenagha/elite-azure-course/blob/master/scripts.sh"], 
+  #         "commandToExecute": "./scripts.sh"
+  #       }
+  #     SETTINGS
+  # }
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
+
+  }
+
+  tags = {
+    environment = "dev"
+  }
+}
+

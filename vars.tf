@@ -21,7 +21,7 @@ variable "rdp" {
 variable "resource_group_name" {
   description = "Name of the resource group to be imported."
   type        = string
-  default = "eliteInfra"
+  default     = "eliteInfra"
 }
 variable "subnet_names" {
   description = "A list of public subnets inside the vNet."
