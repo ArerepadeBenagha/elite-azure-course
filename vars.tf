@@ -1,35 +1,18 @@
-variable "location" {
-  type    = string
-  default = "eastus"
-}
-variable "alias" {
-  description = "Alias for all resources created"
-  type        = string
-  default     = "dev"
-}
-
 variable "ssh-source-address" {
   type    = string
   default = "*"
 }
-
 variable "rdp" {
   type    = string
   default = "*"
-}
-
-variable "resource_group_name" {
-  description = "Name of the resource group to be imported."
-  type        = string
-  default     = "eliteInfra"
 }
 variable "subnet_names" {
   description = "A list of public subnets inside the vNet."
   type        = list(string)
   default     = ["public-sb", "subnet2", "subnet3"]
 }
-variable "vnet_name" {
-  description = "Name of the vnet to create"
+variable "path_to_public_key" {
+  description = "Name of the public ssh key to connect to vm"
   type        = string
-  default     = "elitedevvnet"
+  default     = "id_rsa.pub"
 }

@@ -1,14 +1,14 @@
-  
+
 #----------------------------------------------------------
 # Resource Group, VNet, Subnet selection & Random Resources
 #----------------------------------------------------------
 data "azurerm_resource_group" "rg" {
-  name = var.resource_group_name
+  name = var.RG_network
 }
 
-data "azurerm_virtual_network" "dev-interface" {
-  name                = var.virtual_network_name
-  resource_group_name = var.resource_group_name
+data "azurerm_virtual_network" "interface" {
+  name                = var.vnet_name
+  resource_group_name = var.RG_network
 }
 
 # data "azurerm_subnet" "example" {
@@ -33,7 +33,7 @@ resource "azurerm_subnet" "abs_snet" {
   count                = var.azure_bastion_subnet_address_prefix != null ? 1 : 0
   name                 = "AzureBastionSubnet"
   resource_group_name  = data.azurerm_resource_group.rg.name
-  virtual_network_name = data.azurerm_virtual_network.dev-interface.name
+  virtual_network_name = data.azurerm_virtual_network.interface.name
   address_prefixes     = var.azure_bastion_subnet_address_prefix
 }
 
@@ -59,8 +59,8 @@ resource "azurerm_bastion_host" "main" {
   resource_group_name = data.azurerm_resource_group.rg.name
 
   ip_configuration {
-    name                 = "${var.azure_bastion_service_name}-network"
-    subnet_id            = azurerm_subnet.abs_snet.0.id
+    name      = "${var.azure_bastion_service_name}-network"
+    subnet_id = azurerm_subnet.abs_snet.0.id
     # subnet_id            = azurerm_subnet.subnet-1.id
     public_ip_address_id = azurerm_public_ip.pip.id
   }
