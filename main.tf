@@ -43,6 +43,9 @@ module "azure-bastion" {
   vnet_name                           = local.network.vnet_name
   azure_bastion_service_name          = "mybastion-service"
   azure_bastion_subnet_address_prefix = ["10.0.2.0/24"]
+  
+  tags = merge(local.application,
+  { Application = "jenkins bastion", region = local.application.location })
 }
 
 ##--------------------------------------#

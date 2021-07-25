@@ -46,17 +46,6 @@ resource "azurerm_network_security_group" "SG_rules" {
     source_address_prefix      = "*"
     destination_address_prefix = var.ssh-source-address
   }
-  security_rule {
-    name                       = "DenyAllOutBound"
-    priority                   = 4096
-    direction                  = "Outbound"
-    access                     = "Deny"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = "*"
-    destination_address_prefix = var.ssh-source-address
-  }
 
   tags = merge(local.application,
   { Application = "jenkins security rules", name = "jenkins_app" })
