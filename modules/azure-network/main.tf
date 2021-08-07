@@ -2,21 +2,6 @@
 #----------------------------------------------------------
 # Resource Group, VNet, Subnet selection & Random Resources
 #----------------------------------------------------------
-data "azurerm_resource_group" "rg" {
-  name = var.RG_network
-}
-
-data "azurerm_virtual_network" "interface" {
-  name                = var.vnet_name
-  resource_group_name = var.RG_network
-}
-
-# data "azurerm_subnet" "example" {
-#   name                 = "dev"
-#   virtual_network_name = "dev"
-#   resource_group_name  = "networking"
-# }
-
 resource "random_string" "str" {
   length  = 6
   special = false

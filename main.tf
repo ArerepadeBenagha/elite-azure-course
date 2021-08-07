@@ -8,11 +8,6 @@ resource "azurerm_resource_group" "RG_net" {
   location = local.application.location
   tags     = local.common_tags
 }
-data "azurerm_subnet" "subnet" {
-  name                 = "public-sb"
-  virtual_network_name = local.network.vnet_name
-  resource_group_name  = local.network.RG_network
-}
 resource "azurerm_public_ip" "public-pip" {
   name                = local.application.alias
   resource_group_name = local.network.RG_network
@@ -32,6 +27,8 @@ resource "azurerm_network_interface" "interface" {
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.public-pip.id
   }
+  tags = merge(local.application,
+  { Application = "Nic", region = local.application.location })
 }
 
 # ##--------------------------------------#
@@ -43,7 +40,7 @@ module "azure-bastion" {
   vnet_name                           = local.network.vnet_name
   azure_bastion_service_name          = "mybastion-service"
   azure_bastion_subnet_address_prefix = ["10.0.2.0/24"]
-  
+
   tags = merge(local.application,
   { Application = "jenkins bastion", region = local.application.location })
 }

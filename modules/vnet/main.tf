@@ -1,8 +1,4 @@
 #Azure Generic vNet Module
-data "azurerm_resource_group" "RG_network" {
-  name = var.RG_network
-}
-
 resource "azurerm_virtual_network" "vnet" {
   name                = var.vnet_name
   resource_group_name = data.azurerm_resource_group.RG_network.name

@@ -17,3 +17,42 @@ WindowsServer  MicrosoftWindowsServer  2008-R2-SP1         MicrosoftWindowsServe
 
 ####### Jenkins URL:
 http://20.106.144.233:8080/env-vars.html/
+
+Deployment CD
+#-----------------------------------------------------------------------------#
+#!/bin/bash
+#----------#
+echo ""
+echo ""////////////// *docker build* ///////////""
+
+ sudo rm -rf /Deployments
+ sudo mkdir /Deployments
+ sudo cp Dockerfile /Deployments
+      cd /Deployments
+
+echo ""
+echo $PWD
+
+echo ## File Validation ##
+ [[ -f /Deployments/Dockerfile ]] && echo "File exist" || echo "File does not exist"
+ [[ -f /Deployments/Dockerfile ]] && echo "File exist" || echo "File does not exist"
+
+#-----------------------------------------------------------------------------#
+#!/bin/bash
+#----------#
+echo ""
+echo ## Build file ## 
+echo $PWD
+cd /Deployments
+
+ file="./Deployments/Dockerfile"
+
+if [ ! -f "$file" ]
+
+then
+    echo "Start build"
+    sudo docker build -t devops .
+
+else
+   echo "File $file does not exist"
+fi

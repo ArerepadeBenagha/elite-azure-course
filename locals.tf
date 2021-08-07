@@ -10,10 +10,10 @@ locals {
   }
 
   network = {
-    resource_group_name  = "Elite_resources_DEV"
-    RG_network           = "Elite_resourcesRG"
-    vnet_name            = "Vnet_development"
-    RG_Vnet              = "DEVRG_vnet"
+    resource_group_name = "Elite_resources_DEV"
+    RG_network          = "Elite_resourcesRG"
+    vnet_name           = "Vnet_development"
+    RG_Vnet             = "DEVRG_vnet"
   }
 
   application = {
