@@ -103,6 +103,10 @@ resource "azurerm_linux_virtual_machine" "jenkins-vm" {
   tags = merge(local.application,
   { Application = "jenkins vm", name = local.application.app_name })
 }
+# ##--------------------------------------#
+# //         Appgw Module              
+# ##--------------------------------------#
+
 locals {
   ui-beap       = join("-", [local.application.alias, "ui-beap"])
   api-beap      = join("-", [local.application.alias, "api-beap"])
