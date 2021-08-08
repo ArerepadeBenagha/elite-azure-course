@@ -214,7 +214,6 @@ data "azurerm_public_ip" "publicip" {
   resource_group_name = local.network.RG_network
   depends_on          = [azurerm_application_gateway.app-gateway]
 }
-
 resource "azurerm_network_interface_application_gateway_backend_address_pool_association" "dev_beap" {
   network_interface_id    = data.azurerm_network_interface.dev_nic.id
   ip_configuration_name   = local.application.alias
