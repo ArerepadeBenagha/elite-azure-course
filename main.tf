@@ -103,3 +103,50 @@ resource "azurerm_linux_virtual_machine" "jenkins-vm" {
   tags = merge(local.application,
   { Application = "jenkins vm", name = local.application.app_name })
 }
+locals {
+  ui-beap       = join("-", [local.application.alias, "ui-beap"])
+  api-beap      = join("-", [local.application.alias, "api-beap"])
+  ui-htst       = join("-", [local.application.alias, "ui-htst"])
+  api-htst      = join("-", [local.application.alias, "api-htst"])
+  http-listener = join("-", [local.application.alias, "http-listener"])
+  http-url-path = join("-", [local.application.alias, "http-url-path"])
+  appgw-probe   = join("-", [local.application.alias, "appgw-probe"])
+  http-rqrt     = join("-", [local.application.alias, "http-rqrt"])
+}
+module "app-gateway" {
+  source      = "./modules/appgateway"
+  name        = join("-", [local.application.alias, "appgw", ])
+  rg_location = local.application.location
+  rg_name     = local.network.RG_network
+  backend_address_pools = [{
+      name         = local.ui-beap
+      ip_addresses = ["20.185.148.120"]
+      fqdns        = null
+    }]
+  backend_http_settings = [{
+      name                                      = local.ui-htst
+      path                                      = "/"
+      is_https                                  = false
+      request_timeout                           = 30
+      probe_name                                = local.appgw-probe
+      pick_host_name_from_backend_http_settings = false
+  }]
+  http_listeners = [{
+      name                 = local.http-listener
+      ssl_certificate_name = null
+      host_name            = null
+      require_sni          = null
+    }]
+  probes = [{
+    name                                      = local.appgw-probe
+    path                                      = "/"
+    is_https                                  = false
+    pick_host_name_from_backend_http_settings = false
+  }]
+  basic_request_routing_rules = [{
+    name                       = local.http-rqrt
+    http_listener_name         = local.http-listener
+    backend_address_pool_name  = local.ui-beap
+    backend_http_settings_name = local.ui-htst
+  }]
+}
