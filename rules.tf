@@ -90,17 +90,6 @@ resource "azurerm_network_security_group" "SG_rules" {
     source_address_prefix      = "*"
     destination_address_prefix = var.ssh-source-address
   }
-    security_rule {
-    name                       = "port_80"
-    priority                   = 108
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "80"
-    source_address_prefix      = "*"
-    destination_address_prefix = var.ssh-source-address
-  }
 
   tags = merge(local.application,
   { Application = "jenkins security rules", name = "jenkins_app" })
